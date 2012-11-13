@@ -1,0 +1,9 @@
+************************************************************
+Interchange: A Visualized Profiler for Web Applications
+************************************************************
+Required libraries: jQuery, d3.js
+
+
+- jsProfiler.js: Logs timing for functions and visualizes the calling of new functions (call stack)
+
+- Pyrofiler: 
