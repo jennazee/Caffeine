@@ -8,20 +8,27 @@
 //    c) logs all the info for future viz ('logger')
 
 //object representation of the information the visualizer will show
-function FunctionObject(time) {
-    this.runs = []
-    this.parents = []
+function FunctionObject() {
+    this.runs = [] 
 };
 
+function stackObj(name) {
+	this.name = name;
+	this.children=[]
+}
+
+var callStack = []
+var originators = []
+
 //constant time, yo.
-var functionsTracked = {};
+var functions = {};
 var svg;
 
 var traverser = function(object) {
     $.each(object, function(key, value) {
         if (typeof(value) === 'function') {
             object[key] = clocker(value, key)
-            functionsTracked[key] = new FunctionObject()
+            functions[key] = new FunctionObject()
         }
         else if (typeof(value) === 'object'){
             traverser(value)
@@ -33,25 +40,31 @@ var traverser = function(object) {
 //TODO: make the wrapper take as least time as possible because it'll slow down any nested functions... umm.
 var clocker = function(toTime, name) {
     var clocked = function() {
+    	//stack it
+    	var rep = new stackObj(name)
+    	callStack.push(rep)
+
         //time it
         var start = new Date().getMilliseconds();
         var retVal = toTime.apply(this, arguments);
         var end = new Date().getMilliseconds();
-        functionsTracked[name].runs.push(end-start)
-        functionsTracked[name].parents[functionsTracked[name].runs.length]=[]
-        pushParents(name, arguments)
+        
+        //close it
+        var finished = callStack.pop();
+        	finished.time = end-start;
+        if (callStack.length > 0) {
+    		callStack[callStack.length-1].children.push(finished)
+    	}
+    	else {
+    		originators.push(finished)
+    	}
+
+        //mark it
+        functions[name].runs.push(end-start)
         return retVal;
     }
     return clocked
 }
-
-var pushParents = function(name, args) {
-    if (args.length>0){
-        functionsTracked[name].parents[functionsTracked[name].runs.length].push(args.callee.caller.name)
-        pushParents(name, args.callee.caller.arguments)
-    }
-}
-
 
 //*** VISUALIZATIONS!! ***
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -72,9 +85,11 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
 	    .scale(y)
 	    .orient("left")
 
-var drawBars = function() {
+	var barWidth = 25;
+
+setTimeout(function() {
 	var points = [];
-	$.each(functionsTracked, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+	$.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
 	svg = d3.select("body").append("svg")
 	    .attr("width", width + margin.left + margin.right)
@@ -104,24 +119,23 @@ var drawBars = function() {
 	      .data(points)
 	    .enter().append("rect")
 	      .attr("class", "bar")
-	      .attr("x", function(d) { return x(d.name); })
-	      .attr("width", x.rangeBand())
+	      .attr("x", function(d,i) {return i*barWidth+40})
+	      .attr("width", barWidth)
 	      .attr("y", function(d) { return y(d.avgT); })
 	      .attr("height", function(d) { return height - y(d.avgT); });
-}
+}, 1000)
+
 
 var redraw = function() {
 	var points = [];
-	$.each(functionsTracked, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
-	console.log(points)
+	$.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
-	console.log('redraw')
  	svg.selectAll('rect')
  		.data(points)
  		.transition()
  		.duration(500)
-		.attr("x", function(d) { return x(d.name); })
-	      .attr("width", x.rangeBand())
+		.attr("x", function(d,i) {return i*barWidth+40})
+	      .attr("width", barWidth)
 	      .attr("y", function(d) { return y(d.avgT); })
 	      .attr("height", function(d) { return height - y(d.avgT); });
 
@@ -130,13 +144,7 @@ var redraw = function() {
 		.transition()
 		.duration()
 		.text(function(d) {return d.name})
- }
-
-setTimeout(function(){
-	drawBars();
-}, 1000);
+}
 
 
-setInterval(function(){
-	redraw();
-}, 1000);
+setInterval(redraw, 1000);
