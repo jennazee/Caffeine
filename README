@@ -1,9 +1,11 @@
 ************************************************************
 Caffeine: A Visualized Profiler for Web Applications
 ************************************************************
+About: Allows you to capture the run time of specific Javascript object's methods so you can see how the code YOU wrote is doing (and only that code). 
+
 Required libraries: jQuery, d3.js
 
 
-- jsProfiler.js: Logs timing for functions and visualizes the calling of new functions (call stack)
+- jsProfiler.js: Logs functions' runtime and captures the call stack for breakdown and evaluation of a function's speed
 
 - Pyrofiler (maybe coming soon): Visualized requests coming in and out of a Python (Flask) server
