@@ -49,7 +49,6 @@ Profiler.prototype.traverser = function(object) {
             p.traverser(value)
         }
     })
-    console.log(functions)
 }
 
 // takes in a function and wraps it in a timing scheme, and stores that information
