@@ -1,11 +1,12 @@
-var margin = {top: 20, right: 20, bottom: 30, left: 40};
+var margin = {top: 20, right: 20, bottom: 30, left: 60};
 var width = 960 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
-
+var points = [];
 
 function FlatGrapher() {
     this.svg;
     this.redrawer;
+    this.name = name;
 
     this.x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
@@ -26,12 +27,12 @@ function FlatGrapher() {
 FlatGrapher.prototype.initFlat = function() {
     var self = this
     setTimeout(function() {
-    
-    var points = [];
+
     $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
     $('body').append("<div id='graphpad'></div>")
-    $($('#graphpad').css('width', $('svg').attr('width')).css('height', $('svg').attr('height')))
+    $('#graphpad').append("<h1 id='graphtitle'>Methods, Profiled</h1>")
+    $('#graphpad').append('<form id="graph-select"><label><input type="radio" name="mode" value="flat" checked> Flat</label><label><input type="radio" name="mode" value="stacked"> Stacked</label></form>')
 
     self.svg = d3.select("#graphpad").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -52,7 +53,7 @@ FlatGrapher.prototype.initFlat = function() {
         .call(self.yAxis)
         .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr("y", -50)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Average Time (ms)");
@@ -81,14 +82,14 @@ FlatGrapher.prototype.initFlat = function() {
         });
 
         $($("#graphpad").draggable().resizable({
-            minHeight: 150,
+            minHeight: 300,
+            minWidth: points.length*30+margin.left+margin.right+30,
             alsoResize: "svg",
             resize: function(event, ui) {
                 self.scaleFlat()
                 height = $('svg').height()- margin.top - margin.bottom;
                 width = $('svg').width()- margin.left - margin.right;
             }
-
         }));
     }, 1000)
     self.redrawer = setInterval(function(){self.redrawFlat.call(self)}, 1000);
@@ -96,7 +97,6 @@ FlatGrapher.prototype.initFlat = function() {
 
 
 FlatGrapher.prototype.redrawFlat = function() {
-    console.log('redraw')
     var self = this;
     var points = [];
     $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
