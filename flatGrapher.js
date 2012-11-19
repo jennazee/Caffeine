@@ -68,13 +68,13 @@ FlatGrapher.prototype.init = function() {
             minWidth: points.length*30+margin.left+margin.right+30,
             alsoResize: "svg",
             resize: function(event, ui) {
-                self.scaleFlat()
+                self.scale()
                 height = $('svg').height()- margin.top - margin.bottom;
                 width = $('svg').width()- margin.left - margin.right;
             }
         }));
     }, 1000)
-    self.redrawer = setInterval(function(){self.redrawFlat.call(self)}, 1000);
+    self.redrawer = setInterval(function(){self.redraw.call(self)}, 1000);
 }
 
 
@@ -137,5 +137,5 @@ FlatGrapher.prototype.scale = function() {
     self.svg.selectAll(".y-axis")
         .call(self.yAxis)
 
-    self.redrawFlat()
+    self.redraw()
 }

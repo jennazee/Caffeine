@@ -21,11 +21,6 @@ var functions = {};
 function Profiler(toProfile, graphing) {
     this.toProfile = toProfile;
     this.graphing = graphing;
-
-    $('head').append("<script src='../Caffeine/d3.v2.min.js' type='text/javascript'></script>")
-    $('head').append("<script src='../Caffeine/flatGrapher.js' type='text/javascript'></script>")
-    $('head').append('<link rel="stylesheet" type="text/css" href="../Caffeine/profiler.css" />')
-    $('head').append('<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />')
 }
 
 Profiler.prototype.start = function(){
