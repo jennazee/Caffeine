@@ -18,9 +18,8 @@ It is recognized that, based on the architecture of this program, profiling your
     ``` lolcat = new LOLCat()
         new Profiler(lolcat, true).start()```
 
-------------------------------------------------------
+
 ##API
-------------------------------------------------------
 ###Application-wide Variables
 
 ####```grapher```
@@ -39,6 +38,7 @@ An object representing one of the profiled object's methods
 
 ####```MethodObject.runs```
 An array of the clocked runtime for each time the represented method was run
+
 ----------------------------------------------
 
 ###```StackObject()```
@@ -72,48 +72,46 @@ Returns the wrapped method.
 ### Grapher
 Super class of FlatGrapher and StackedGrapher
 
-####Grapher.init()
+####```Grapher.init()```
 Creates the initial graph. Overridden in subclasses
 
-####Grapher.redraw()
+####```Grapher.redraw()```
 Redraws the graph. Overridden in subclasses. Refreshes every second.
 
-####Grapher.scale()
+####```Grapher.scale()```
 Scales the graph. Calls redraw(). Overridden in subclasses
 
-####Grapher.stop()
+####```Grapher.stop()```
 Stops the redrawing of the graph
 
 ----------------------------------------------------
 ### FlatGrapher
 Inherits from Grapher
 
-####FlatGrapher.init()
+####```FlatGrapher.init()```
 Creates the initial graph such that each method has it's own bar
 
-####FlatGrapher.redraw()
+####```FlatGrapher.redraw()```
 Redraws the graph. See Grapher.redraw() for more information.
 
-####FlatGrapher.scale()
+####```FlatGrapher.scale()```
 Scales the graph.
 
-####FlatGrapher.stop()
+####```FlatGrapher.stop()```
 Stops the redrawing of the graph
 
 -----------------------------------------------------
 ### StackedGrapher
 Inherits from Grapher
 
-####StackedGrapher.init()
+####```StackedGrapher.init()```
 Creates the initial graph such that each bar represents a top-level method in ```originators```
 
-####StackedGrapher.redraw()
+####```StackedGrapher.redraw()```
 Redraws the graph. See Grapher.redraw() for more information.
 
-####StackedGrapher.scale()
+####```StackedGrapher.scale()```
 Scales the graph.
 
-####StackedGrapher.stop()
+####```StackedGrapher.stop()```
 Stops the redrawing of the graph
-
-
