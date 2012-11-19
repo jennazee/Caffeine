@@ -1,30 +1,12 @@
-var margin = {top: 20, right: 20, bottom: 30, left: 60};
-var width = 960 - margin.left - margin.right;
-var height = 500 - margin.top - margin.bottom;
-var points = [];
-
 function FlatGrapher() {
-    this.svg;
-    this.redrawer;
-    this.name = name;
-
-    this.x = d3.scale.ordinal()
-        .rangeRoundBands([0, width], .1);
-
-    this.y = d3.scale.linear()
-        .range([height, 0]);
-
-    this.xAxis = d3.svg.axis()
-        .scale(this.x)
-        .orient("bottom");
-
-    this.yAxis = d3.svg.axis()
-        .scale(this.y)
-        .orient("left")
+    Grapher.call(this)
 }
 
+FlatGrapher.prototype = new Grapher();
+FlatGrapher.prototype.constructor = FlatGrapher;
+
 //bar chart
-FlatGrapher.prototype.initFlat = function() {
+FlatGrapher.prototype.init = function() {
     var self = this
     setTimeout(function() {
 
@@ -96,7 +78,7 @@ FlatGrapher.prototype.initFlat = function() {
 }
 
 
-FlatGrapher.prototype.redrawFlat = function() {
+FlatGrapher.prototype.redraw = function() {
     var self = this;
     var points = [];
     $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
@@ -125,7 +107,7 @@ FlatGrapher.prototype.redrawFlat = function() {
         .text(function(d) {return d.name})
 }
 
-FlatGrapher.prototype.scaleFlat = function() {
+FlatGrapher.prototype.scale = function() {
     var points = [];
     $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
@@ -156,9 +138,4 @@ FlatGrapher.prototype.scaleFlat = function() {
         .call(self.yAxis)
 
     self.redrawFlat()
-}
-
-FlatGrapher.prototype.stopFlat = function() {
-    var self = this;
-    clearInterval(self.redrawer)
 }

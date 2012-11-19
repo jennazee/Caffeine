@@ -1,19 +1,11 @@
 //javascript profiler with d3 visualizations showing run-times and a "spawning tree" 
 
-//TODO
-//- make the graph window centered, but draggable and resizable
-//- make the whole thing an object that take in the to-be-profiled object as a parameter. The profiler can then be started and stopped as the user pleases
-//p = new Profiler(myObject, true).start 
-
 //object representation of the information the visualizer will show
-
-
-
-function FunctionObject() {
+function MethodObject() {
     this.runs = [] 
 };
 
-function stackObj(name) {
+function StackObject(name) {
     this.name = name;
     this.children=[]
 }
@@ -29,12 +21,17 @@ var functions = {};
 function Profiler(toProfile, graphing) {
     this.toProfile = toProfile;
     this.graphing = graphing;
+
+    $('head').append("<script src='../Caffeine/d3.v2.min.js' type='text/javascript'></script>")
+    $('head').append("<script src='../Caffeine/flatGrapher.js' type='text/javascript'></script>")
+    $('head').append('<link rel="stylesheet" type="text/css" href="../Caffeine/profiler.css" />')
+    $('head').append('<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />')
 }
 
 Profiler.prototype.start = function(){
     this.traverser(this.toProfile)
     if (this.graphing) {
-        grapher = new FlatGrapher().initFlat()
+        grapher = new FlatGrapher().init()
     }
 }
 
@@ -43,7 +40,7 @@ Profiler.prototype.traverser = function(object) {
     $.each(object, function(key, value) {
         if (typeof(value) === 'function') {
             object[key] = p.clocker(value, key)
-            functions[key] = new FunctionObject()
+            functions[key] = new MethodObject()
         }
         else if (typeof(value) === 'object'){
             p.traverser(value)
@@ -56,7 +53,7 @@ Profiler.prototype.traverser = function(object) {
 Profiler.prototype.clocker = function(toTime, name) {
     var clocked = function() {
         //stack it
-        callStack.push(new stackObj(name))
+        callStack.push(new StackObject(name))
         var start = new Date().getMilliseconds();
         var retVal = toTime.apply(this, arguments);
         var end = new Date().getMilliseconds();
