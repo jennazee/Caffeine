@@ -12,11 +12,11 @@ It is recognized that, based on the architecture of this program, profiling your
 1. If you don't already have jQuery as a script in the head of your HTML, put the following line in your HTML head:
         ```<script src='../Caffeine/jquery-1.8.2.min.js'></script>```
 2. In the head of you HTML file, put following after all of your other requisite JS files
-        ```<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
-        <script src='../Caffeine/jsProfiler.js' type='text/javascript'></script>
+	```<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+	<script src='../Caffeine/jsProfiler.js' type='text/javascript'></script>
 	<script src='../Caffeine/d3.v2.min.js' type='text/javascript'></script>
 	<script src='../Caffeine/flatGrapher.js' type='text/javascript'></script>
-        <script src='../Caffeine/stackedGrapher.js' type='text/javascript'></script>
+	<script src='../Caffeine/stackedGrapher.js' type='text/javascript'></script>
 	<link rel="stylesheet" type="text/css" href="../Caffeine/profiler.css" />
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />```
 
