@@ -10,6 +10,63 @@ function StackObject(name) {
     this.children=[]
 }
 
+StackObject.prototype.sameAs  = function(other) {
+    if (!(this.name === other.name)){
+        return false
+    }
+    else if (!(this.children.length === other.children.length)) {
+        return false
+    }
+    else {
+        for (i=0; i<this.children.length; i++) {
+            if (!(this.children[i].sameAs(other.children[i]))){
+                return false
+            }
+        }
+    }
+    //still here? it's a match!
+    return true
+}
+
+StackObject.prototype.collapseTimesInto  = function(other) {
+    if (!(this.time.length)){
+        this.time = [this.time]
+    }
+    this.time.push(other.time)
+    for (i=0; i<this.children.length; i++){
+        this.children[i].collapseTimesInto(other.children[i])
+    }
+}
+
+var collapseOriginators = function(){
+    var flattened = {}
+    $.each(originators, function() {
+        var curr = this
+        if (!flattened[curr.name]){
+            flattened[curr.name] = [this]
+        }
+        else {
+            $.each(flattened[curr.name], function(){
+                if (this.sameAs(curr)){
+                    this.collapseTimesInto(curr)
+                }
+                else {
+                    curr.name = curr.name + '(' + str(flattened[curr.name].length) + ')'
+                    flattened[curr.name].push(curr)
+                }
+            })
+        }
+    })
+    var flattenedArray = []
+    $.each(flattened, function(k,v) {
+        if (v[0].time.length > 1) {
+            v[0].time = d3.mean(v[0].time)
+        }
+        flattenedArray.push(v[0])
+    })
+    return flattenedArray
+}   
+
 //program-wide variables
 var grapher;
 var callStack = [];
@@ -23,10 +80,55 @@ function Profiler(toProfile, graphing) {
     this.graphing = graphing;
 }
 
-Profiler.prototype.start = function(){
+Profiler.prototype.makeSVG = function() {
+    return d3.select("#graphpad").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr('id', 'graph')
+}
+
+Profiler.prototype.start = function(p){
+    self = p;
     this.traverser(this.toProfile)
     if (this.graphing) {
-        grapher = new FlatGrapher().init()
+        $('body').append("<div id='graphpad'></div>")
+        $('#graphpad').append("<h1 id='graphtitle'>Methods, Profiled</h1>")
+        $('#graphpad').append('<form id="graph-select"><label><input type="radio" name="mode" value="flat" checked> Flat</label><label><input type="radio" name="mode" value="stacked"> Stacked</label></form>')
+        
+        var svg = this.makeSVG()
+
+        grapher = new FlatGrapher(svg)
+        setTimeout(function() {grapher.init()}, 100)
+
+        $("#graphpad").draggable().resizable({
+            minHeight: 300,
+            minWidth: points.length*30+margin.left+margin.right+30,
+            alsoResize: "svg",
+            resize: function(event, ui) {
+                grapher.scale()
+                height = $('svg').height()- margin.top - margin.bottom;
+                width = $('svg').width()- margin.left - margin.right;
+            }
+        })
+
+        $('input').change(function(){
+            if ($(this).val() === 'flat') {
+                grapher.stop()
+                d3.select('svg').remove()
+                var svg = p.makeSVG.call(p)
+                grapher = new FlatGrapher(svg)
+                grapher.init();
+            }
+            else {
+                grapher.stop()
+                d3.select('svg').remove()
+                var svg = p.makeSVG.call(p)
+                grapher = new StackedGrapher(svg)
+                grapher.init();
+            }
+        })
     }
 }
 
@@ -61,7 +163,6 @@ Profiler.prototype.clocker = function(toTime, name) {
         else {
             originators.push(finished)
         }
-
         //mark it
         functions[name].runs.push(end-start)
         return retVal;
