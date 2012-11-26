@@ -101,7 +101,7 @@ Stops the redrawing of the graph
 Inherits from Grapher
 
 ####`FlatGrapher.init()`
-Creates the initial graph such that each method has it's own bar
+Creates the initial graph visualization such that each method has it's own bar
 
 ####`FlatGrapher.redraw()`
 Redraws the graph. See Grapher.redraw() for more information.
@@ -117,7 +117,7 @@ Stops the redrawing of the graph
 Inherits from Grapher
 
 ####```StackedGrapher.init()```
-Creates the initial graph such that each bar represents a top-level method in `originators`
+Creates the initial graph visualization such that each bar represents a top-level method in `originators`. Nested inside each bar, recursively, are the methods called by the depicted method.
 
 ###`StackedGrapher.nest()`
 Helper method for `StackedGrapher.init()` that recursively draws the nested bars

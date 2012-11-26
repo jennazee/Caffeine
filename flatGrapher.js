@@ -10,7 +10,7 @@ FlatGrapher.prototype.constructor = FlatGrapher;
 FlatGrapher.prototype.init = function() {
     var self = this
 
-    points = []
+    var points = []
     $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
     self.x.domain(points.map(function(d) { return d.name; }));
