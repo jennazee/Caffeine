@@ -18,7 +18,7 @@ It is recognized that, based on the architecture of this program, profiling your
 
 		<script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
 		<script src='../Caffeine/jsProfiler.js' type='text/javascript'></script>
-		<script src='../Caffeine/d3.v2.min.js' type='text/javascript'></script>
+		<script src='http://d3js.org/d3.v2.js'></script>
 		<script src='../Caffeine/flatGrapher.js' type='text/javascript'></script>
 		<script src='../Caffeine/stackedGrapher.js' type='text/javascript'></script>
 		<link rel="stylesheet" type="text/css" href="../Caffeine/profiler.css" />

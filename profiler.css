@@ -1,0 +1,55 @@
+.x-axis path, .x-axis line, .y-axis path, .y-axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+svg {
+    background-color: white;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.bar {
+    fill: #333;
+}
+
+
+.called {
+    fill: red;
+}
+
+.x-axis path {
+    display: none;
+}
+
+.node {
+    border: solid 1px white;
+    line-height: 12px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: 2px;
+}
+
+#graphpad {
+    width: 960px;
+    background-color: white;
+}
+
+#graphpad:hover {
+    cursor: move;
+}
+
+#graphtitle {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#graph-select {
+    float: right;
+}
+
+label {
+    padding: 10px;
+    font-size: 14px;
+}
