@@ -95,7 +95,7 @@ Profiler.prototype.start = function(p){
     if (this.graphing) {
         $('body').append("<div id='graphpad'></div>")
         $('#graphpad').append("<h1 id='graphtitle'>Methods, Profiled</h1>")
-        $('#graphpad').append('<form id="graph-select"><label><input type="radio" name="mode" value="flat" checked> Flat</label><label><input type="radio" name="mode" value="stacked"> Stacked</label></form>')
+        $('#graphpad').append('<form id="graph-select"><label><input type="radio" name="mode" value="flat" checked> Flat</label><label><input type="radio" name="mode" value="stacked"> Nested</label></form>')
         
         var svg = this.makeSVG()
 
@@ -104,7 +104,7 @@ Profiler.prototype.start = function(p){
 
         $("#graphpad").draggable().resizable({
             minHeight: 300,
-            minWidth: points.length*30+margin.left+margin.right+30,
+            minWidth: 475,
             alsoResize: "svg",
             resize: function(event, ui) {
                 grapher.scale()

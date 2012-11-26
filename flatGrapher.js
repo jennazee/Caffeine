@@ -47,7 +47,7 @@ FlatGrapher.prototype.init = function() {
         })
         .attr("height", function(d) {
             if (d.avgT){
-                return height-self.y(d.avgT)
+                return Math.max(0, height-self.y(d.avgT))
             }
             else {
                 return 0;
@@ -79,7 +79,7 @@ FlatGrapher.prototype.redraw = function() {
         })
         .attr("height", function(d) {
             if (d.avgT){
-                return height-self.y(d.avgT)
+                return Math.max(0, height-self.y(d.avgT))
             }
             else {
                 return 0;
