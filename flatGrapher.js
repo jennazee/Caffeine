@@ -1,7 +1,7 @@
 function FlatGrapher(svg, data) {
     Grapher.call(this)
     this.svg = svg;
-    this.data = data
+    this.data = data;
 }
 
 FlatGrapher.prototype = new Grapher(this.svg, this.data);
@@ -9,10 +9,12 @@ FlatGrapher.prototype.constructor = FlatGrapher;
 
 //bar chart
 FlatGrapher.prototype.init = function() {
-    var self = this
+    var self = this;
 
-    var points = []
-    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    var points = [];
+    $.each(this.data, function(k,v) {
+        points.push( {name: k, avgT: d3.mean(v.runs)} )
+    });
 
     self.x.domain(points.map(function(d) { return d.name; }));
     self.y.domain([0, d3.max(points, function(d) { return d.avgT; })]);
@@ -36,7 +38,7 @@ FlatGrapher.prototype.init = function() {
         .data(points)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) {return self.x(d.name)})
+        .attr("x", function(d) { return self.x(d.name) })
         .attr("width", self.x.rangeBand())
         .attr("y", function(d) {
             if (d.avgT){
@@ -64,7 +66,9 @@ FlatGrapher.prototype.redraw = function() {
     var points = [];
 
     //TODO: Dynamic data updating
-    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    $.each(this.data, function(k,v) {
+        points.push( {name: k, avgT: d3.mean(v.runs)} )
+    });
 
     self.svg.selectAll('rect')
         .data(points)
@@ -89,12 +93,14 @@ FlatGrapher.prototype.redraw = function() {
 
     self.svg.selectAll('text')
         .data(points)
-        .text(function(d) {return d.name})
+        .text(function(d) {return d.name});
 }
 
 FlatGrapher.prototype.scale = function() {
     var points = [];
-    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    $.each(this.data, function(k,v) {
+        points.push( {name: k, avgT: d3.mean(v.runs)} )
+    })
 
     var self = this;
     
@@ -110,7 +116,7 @@ FlatGrapher.prototype.scale = function() {
 
     self.yAxis = d3.svg.axis()
         .scale(self.y)
-        .orient("left")
+        .orient("left");
 
     self.x.domain(points.map(function(d) { return d.name; }));
     self.y.domain([0, d3.max(points, function(d) { return d.avgT; })]);
@@ -120,7 +126,7 @@ FlatGrapher.prototype.scale = function() {
         .call(self.xAxis);
 
     self.svg.selectAll(".y-axis")
-        .call(self.yAxis)
+        .call(self.yAxis);
 
-    self.redraw()
+    self.redraw();
 }

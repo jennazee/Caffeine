@@ -1,6 +1,6 @@
 //javascript profiler with d3 visualizations showing run-times and a "spawning tree" 
 
-//object representation of the information the visualizer will show
+//object representations of the information the visualizer will show
 function MethodObject() {
     this.runs = [];
 };
@@ -11,7 +11,7 @@ function StackObject(name) {
 };
 
 StackObject.prototype.sameAs  = function(other) {
-    if (!(this.name === other.name)) {
+    if (!(this.name.split('_v_')[0] === other.name.split('_v_')[0])) {
         return false;
     }
     else if (!(this.children.length === other.children.length)) {
@@ -104,6 +104,7 @@ Profiler.prototype.start = function() {
     }
 }
 
+//possible context problems
 Profiler.prototype.traverser = function(object) {
     var self = this;
     $.each(object, function(key, value) {
@@ -123,7 +124,6 @@ Profiler.prototype.clocker = function(toTime, name) {
     var self = this
     var clocked = function() {
         //stack it
-
         self.callStack.push(new StackObject(name));
         var start = new Date().getMilliseconds();
         var retVal = toTime.apply(this, arguments);
