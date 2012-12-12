@@ -3,8 +3,9 @@ var width = 960 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 var points = [];
 
-function Grapher(svg) {
+function Grapher(svg, data) {
     this.svg = svg;
+    this.data = data;
     this.redrawer;
 
     this.x = d3.scale.ordinal()

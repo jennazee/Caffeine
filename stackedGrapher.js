@@ -1,20 +1,54 @@
-function StackedGrapher(svg) {
+function StackedGrapher(svg, data) {
     Grapher.call(this)
     this.svg = svg,
-    this.tops = collapseOriginators(),
+    this.data = data,
     this.colors =  d3.scale.category10()
+};
+
+StackedGrapher.prototype = new Grapher(this.svg, this.data);
+StackedGrapher.prototype.constructor = StackedGrapher;
+
+StackedGrapher.prototype.collapseOriginators = function() {
+    var flattened = {};
+    $.each(this.data, function() {
+        var curr = this;
+        if (!flattened[curr.name]) {
+            flattened[curr.name] = [curr];
+        }
+        else {
+            $.each(flattened[curr.name], function() {
+                if (this.sameAs(curr)){
+                    this.collapseTimesInto(curr);
+                }
+                else {
+                    curr.name = curr.name + '(' + str(flattened[curr.name].length) + ')';
+                    flattened[curr.name].push(curr);
+                };
+            })
+        }
+    })
+    return flattened;
 }
 
-StackedGrapher.prototype = new Grapher(this.svg);
-StackedGrapher.prototype.constructor = StackedGrapher;
+StackedGrapher.prototype.flattenOriginators = function(flattened) {
+    var flattenedArray = [];
+    $.each(flattened, function(k,v) {
+        if (v[0].time.length > 1) {
+            v[0].time = d3.mean(v[0].time);
+        }
+        flattenedArray.push(v[0]);
+    })
+    return flattenedArray
+};
 
 //bar chart
 StackedGrapher.prototype.init = function() {
-
     var self = this;
 
-    this.x.domain(this.tops.map(function(d) { return d.name; }));
-    this.y.domain([0, d3.max(this.tops, function(d) { return d.time; })]);
+    var topsArray = self.flattenOriginators(self.collapseOriginators(self.data))
+
+    this.x.domain(topsArray.map(function(d) { return d.name; }));
+    this.y.domain([0, d3.max(topsArray, function(d) { return d.time; })]);
 
     this.svg.append("g")
         .attr("class", "x-axis")
@@ -32,7 +66,7 @@ StackedGrapher.prototype.init = function() {
         .text("Average Time (ms)");
 
     this.svg.selectAll(".sbar")
-        .data(this.tops)
+        .data(topsArray)
         .enter().append("rect")
         .attr("class", "sbar")
         .attr('id', function(d) {return d.name})
@@ -42,7 +76,7 @@ StackedGrapher.prototype.init = function() {
         .attr("height", function(d) { return Math.max(0, height-self.y(d.time)); })
         .style('fill', self.colors(0))
 
-    $.each(this.tops, function(){
+    $.each(topsArray, function(){
         self.nest(this, this.name, 1)
     })
 
@@ -52,8 +86,11 @@ StackedGrapher.prototype.init = function() {
 var padding = 5
 
 StackedGrapher.prototype.nest = function(sObj, id, depth) {
-    var width = $('#'+id).attr('width')/this.tops[0].children.length
-    for (var i=0; i<sObj.children.length; i++) {
+    var self = this;
+
+    var topsArray = self.flattenOriginators(self.collapseOriginators(self.data))
+    var width = $('#'+id).attr('width')/topsArray[0].children.length
+    for (var i = 0; i < sObj.children.length; i++) {
         d3.select('#graph').append('rect')
             .attr('width', width - padding - padding)
             .attr('x', parseFloat($('#'+id).attr('x'))+(i*width)+padding)
@@ -73,7 +110,10 @@ StackedGrapher.prototype.nest = function(sObj, id, depth) {
 }
 
 StackedGrapher.prototype.recursiveRedraw = function(sObj, id, depth) {
-    var width = $('#'+id).attr('width')/this.tops[0].children.length
+    var self = this;
+
+    var topsArray = self.flattenOriginators(self.collapseOriginators(self.data))
+    var width = $('#'+id).attr('width')/topsArray[0].children.length
     //if this top-level method has been seen in a previous draw
     if (sObj.children.length>0){
         if (d3.select('#'+id + '-' + sObj.children[0].name)){
@@ -102,15 +142,15 @@ StackedGrapher.prototype.recursiveRedraw = function(sObj, id, depth) {
 StackedGrapher.prototype.redraw = function() {
     var self = this;
 
-    this.tops = collapseOriginators()
-    this.x.domain(this.tops.map(function(d) { return d.name; }));
-    this.y.domain([0, d3.max(this.tops, function(d) { return d.time; })]);
+    var topsArray = self.flattenOriginators(self.collapseOriginators(self.data))
+    this.x.domain(topsArray.map(function(d) { return d.name; }));
+    this.y.domain([0, d3.max(topsArray, function(d) { return d.time; })]);
 
     d3.select('.x-axis')
         .attr("transform", "translate(0," + height + ")")
         .call(this.xAxis);
 
-    $.each(this.tops, function(){
+    $.each(topsArray, function(){
         if ($('#'+this.name)) {
             d3.select('#'+this.name)
                 .attr("x", function(d) {return self.x(d.name)})
@@ -136,7 +176,7 @@ StackedGrapher.prototype.redraw = function() {
 
 StackedGrapher.prototype.scale = function() {
     var self = this
-    this.tops = collapseOriginators()
+    var topsArray = self.flattenOriginators(self.collapseOriginators(self.data))
 
     self.x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
@@ -152,8 +192,8 @@ StackedGrapher.prototype.scale = function() {
         .scale(self.y)
         .orient("left")
 
-    self.x.domain(this.tops.map(function(d) { return d.name; }));
-    self.y.domain([0, d3.max(this.tops, function(d) { return d.time; })]);
+    self.x.domain(topsArray.map(function(d) { return d.name; }));
+    self.y.domain([0, d3.max(topsArray, function(d) { return d.time; })]);
 
     self.svg.selectAll('.x-axis')
         .attr("transform", "translate(0," + height + ")")

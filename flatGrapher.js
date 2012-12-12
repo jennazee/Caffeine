@@ -1,9 +1,10 @@
-function FlatGrapher(svg) {
+function FlatGrapher(svg, data) {
     Grapher.call(this)
     this.svg = svg;
+    this.data = data
 }
 
-FlatGrapher.prototype = new Grapher(this.svg);
+FlatGrapher.prototype = new Grapher(this.svg, this.data);
 FlatGrapher.prototype.constructor = FlatGrapher;
 
 //bar chart
@@ -11,7 +12,7 @@ FlatGrapher.prototype.init = function() {
     var self = this
 
     var points = []
-    $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
     self.x.domain(points.map(function(d) { return d.name; }));
     self.y.domain([0, d3.max(points, function(d) { return d.avgT; })]);
@@ -63,7 +64,7 @@ FlatGrapher.prototype.redraw = function() {
     var points = [];
 
     //TODO: Dynamic data updating
-    $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
     self.svg.selectAll('rect')
         .data(points)
@@ -93,7 +94,7 @@ FlatGrapher.prototype.redraw = function() {
 
 FlatGrapher.prototype.scale = function() {
     var points = [];
-    $.each(functions, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
+    $.each(this.data, function(k,v) {points.push( {name: k, avgT: d3.mean(v.runs)} )})
 
     var self = this;
     
