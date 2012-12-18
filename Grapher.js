@@ -4,7 +4,10 @@ var height = 500 - margin.top - margin.bottom;
 var points = [];
 var padding = 5;
 
-function Grapher(svg, data) {
+
+function Grapher() { }
+
+Grapher.prototype.init = function(svg, data) {
     this.svg = svg;
     this.data = data;
     this.redrawer;
@@ -23,8 +26,6 @@ function Grapher(svg, data) {
         .scale(this.y)
         .orient("left")
 }
-
-Grapher.prototype.init = function() { }
 
 Grapher.prototype.redraw = function() { }
 

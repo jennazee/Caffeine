@@ -1,13 +1,10 @@
 function StackedGrapher(svg, data) {
-    Grapher.call(this);
-    this.svg = svg;
-    this.data = data;
+    Grapher.prototype.init.call(this, svg, data);
     this.colors =  d3.scale.category10();
     this.methodVariations = {};
 };
 
-StackedGrapher.prototype = new Grapher(this.svg, this.data);
-StackedGrapher.prototype.constructor = StackedGrapher;
+StackedGrapher.prototype = new Grapher();
 
 StackedGrapher.prototype.createCallTree = function() {
     self = this;

@@ -1,11 +1,8 @@
 function FlatGrapher(svg, data) {
-    Grapher.call(this)
-    this.svg = svg;
-    this.data = data;
+    Grapher.prototype.init.call(this, svg, data);
 }
 
-FlatGrapher.prototype = new Grapher(this.svg, this.data);
-FlatGrapher.prototype.constructor = FlatGrapher;
+FlatGrapher.prototype = new Grapher();
 
 //bar chart
 FlatGrapher.prototype.init = function() {
@@ -57,7 +54,8 @@ FlatGrapher.prototype.init = function() {
             }
         });
 
-    self.redrawer = setInterval(function(){self.redraw.call(self)}, 1000);
+    var redrawGraph = (function(){self.redraw()}).bind(self);
+    self.redrawer = setInterval(redrawGraph, 1000);
 }
 
 
@@ -94,7 +92,7 @@ FlatGrapher.prototype.redraw = function() {
     self.svg.selectAll('text')
         .data(points)
         .text(function(d) {return d.name});
-}
+};
 
 FlatGrapher.prototype.scale = function() {
     var points = [];
@@ -129,4 +127,4 @@ FlatGrapher.prototype.scale = function() {
         .call(self.yAxis);
 
     self.redraw();
-}
+};
