@@ -1,16 +1,16 @@
-#Caffeine: A Visualized Profiler for Web Applications
+# Caffeine: A Visualized Profiler for Web Applications
 
 
-####About
+#### About
 Allows you to capture the run time of specific Javascript objects' methods so you can see how the code YOU wrote is doing
 
-####Unbundled Dependencies
+#### Unbundled Dependencies
 jQuery
 
-####Warning
+#### Warning
 It is recognized that, based on the architecture of this program, profiling your methods using this program slows down your program marginally. We have not yet profiled this program's methods.
 
-###Quick How-To
+### Quick How-To
 0. Put the Caffeine folder on your program's path.
 1. If you don't already have jQuery as a script in the head of your HTML, put the following line in your HTML head:
 		`<script src='../Caffeine/jquery-1.8.2.min.js'></script>`
@@ -31,51 +31,51 @@ It is recognized that, based on the architecture of this program, profiling your
 		new Profiler(lolcat, true).start();
 
 
-##API
-###Application-wide Variables
+## API
+### Application-wide Variables
 
-####`grapher`
+#### `grapher`
 The application-wide graph alias. Starts off as instance of `FlatGrapher`
 
-####`originators`
+#### `originators`
 A list of ```StackObjects``` representing the top-level functions
 
-####`functions`
+#### `functions`
 An object holding all the `MethodObjects`
 
 ------------------------------
 
-###`MethodObject()`
+### `MethodObject()`
 An object representing one of the profiled object's methods
 
-####`MethodObject.runs`
+#### `MethodObject.runs`
 An array of the clocked runtime for each time the represented method was run
 
 ----------------------------------------------
 
-###`StackObject()`
+### `StackObject()`
 Dummy representations of objects that keep track of a method's call stack (which methods it calls, tree-like)
 
-####`StackObject.name`
+#### `StackObject.name`
 The name of the method that this object represents
 
-####`StackObject.children`
+#### `StackObject.children`
 An array of StackObjects representing the methods that the represented method calls
 
 ----------------------------------
 
-###Profiler
+### Profiler
 
-####`Profiler(toProfile, graphing)`
+#### `Profiler(toProfile, graphing)`
 Creates a new profiler for the passed in object. If graphing == true, the average runtimes will be in a moveable and scalable graph div appended to the bottom of the page upon starting the Profiler
 
-####`Profiler.start()`
+#### `Profiler.start()`
 Begins the runtime analysis.
 
-####`Profiler.traverser()`
+#### `Profiler.traverser()`
 Helper method that recursively traverses an object's attributes looking for methods, keeping track of each method it finds, and delegating to Profiler.clocker() for timing the methods.
 
-####`Profiler.clocker()`
+#### `Profiler.clocker()`
 Helper method that wraps a method in clocking code and figures out the call structure of each method. Aids in the creation of the ```originators``` object.
 
 Returns the wrapped method.
@@ -84,26 +84,26 @@ Returns the wrapped method.
 ### Grapher
 Super class of FlatGrapher and StackedGrapher
 
-####`Grapher.init()`
+#### `Grapher.init()`
 Creates the initial graph. Overridden in subclasses
 
-####`Grapher.redraw()`
+#### `Grapher.redraw()`
 Redraws the graph. Overridden in subclasses. Refreshes every second.
 
-####`Grapher.scale()`
+#### `Grapher.scale()`
 Scales the graph. Calls redraw(). Overridden in subclasses
 
-####`Grapher.stop()`
+#### `Grapher.stop()`
 Stops the redrawing of the graph
 
 ----------------------------------------------------
 ### FlatGrapher
 Inherits from Grapher
 
-####`FlatGrapher.init()`
+#### `FlatGrapher.init()`
 Creates the initial graph visualization such that each method has it's own bar
 
-####`FlatGrapher.redraw()`
+#### `FlatGrapher.redraw()`
 Redraws the graph. See Grapher.redraw() for more information.
 
 ####`FlatGrapher.scale()`
@@ -116,20 +116,20 @@ Stops the redrawing of the graph
 ### StackedGrapher
 Inherits from Grapher
 
-####```StackedGrapher.init()```
+#### ```StackedGrapher.init()```
 Creates the initial graph visualization such that each bar represents a top-level method in `originators`. Nested inside each bar, recursively, are the methods called by the depicted method.
 
-###`StackedGrapher.nest()`
+### `StackedGrapher.nest()`
 Helper method for `StackedGrapher.init()` that recursively draws the nested bars
 
-####`StackedGrapher.redraw()`
+#### `StackedGrapher.redraw()`
 Redraws the graph. See `Grapher.redraw()` for more information.
 
-####`StackedGrapher.recursiveRedraw()`
+#### `StackedGrapher.recursiveRedraw()`
 Helper method for `StackedGrapher.redraw()` that recursively redraws the nested bars
 
-####`StackedGrapher.scale()`
+#### `StackedGrapher.scale()`
 Scales the graph.
 
-####`StackedGrapher.stop()`
+#### `StackedGrapher.stop()`
 Stops the redrawing of the graph
